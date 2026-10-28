@@ -1,5 +1,17 @@
 import 'dart:ui';
 
+/// Distinct simulation ink styles for [SignatureController].
+enum PenStyle {
+  /// Velocity-sensitive fountain pen tapering between [minStrokeWidth] and [maxStrokeWidth].
+  fountain,
+
+  /// Clean, uniform monoline ballpoint pen with constant stroke width.
+  ballpoint,
+
+  /// Angle-biased chisel nib simulation producing dynamic thick-thin calligraphic curves.
+  calligraphy,
+}
+
 /// Represents a single recorded touch point with position and timestamp for velocity calculation.
 class SignaturePoint {
   const SignaturePoint({

@@ -1,3 +1,9 @@
+## 1.1.0
+
+- **Auto-Trim & Crop on Export**: Added `trim: true` to `toSvg()` and `toPngBytes()`, tightly cropping signature whitespace to its exact bounding box with configurable padding.
+- **Multiple Pen Styles (`PenStyle`)**: Added `fountain` (velocity pressure), `ballpoint` (clean monoline), and `calligraphy` (chisel-nib dynamics).
+- **Bounding Box Calculation**: Added `SignatureController.bounds` getter providing real-time `Rect` bounds of all drawn strokes.
+
 ## 1.0.0
 
 - Initial release of `smooth_signature_pad`.
