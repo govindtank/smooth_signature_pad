@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sonner/flutter_sonner.dart';
 import 'package:smooth_signature_pad/smooth_signature_pad.dart';
 
 void main() {
@@ -71,10 +72,7 @@ class _SignatureDemoScreenState extends State<SignatureDemoScreen> {
       const ClipboardData(text: 'flutter pub add smooth_signature_pad'),
     );
     HapticFeedback.lightImpact();
-    setState(() => _copiedCommand = true);
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) setState(() => _copiedCommand = false);
-    });
+    Sonner.success('Copied flutter pub add smooth_signature_pad');
   }
 
   void _showSvgDialog() {
@@ -104,19 +102,15 @@ class _SignatureDemoScreenState extends State<SignatureDemoScreen> {
                 await Clipboard.setData(ClipboardData(text: svg));
                 if (context.mounted) {
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('SVG markup copied to clipboard!'),
-                    ),
-                  );
+                  Sonner.success('SVG vector markup copied to clipboard');
                 }
               },
-              icon: const Icon(Icons.copy, size: 16),
+              icon: const Icon(Icons.copy_rounded, size: 16),
               label: const Text('Copy SVG'),
             ),
-            TextButton(
+            FilledButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Close'),
+              child: const Text('Done'),
             ),
           ],
         );
@@ -240,182 +234,190 @@ class _SignatureDemoScreenState extends State<SignatureDemoScreen> {
           const SizedBox(width: 12),
         ],
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 620),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text(
-                  'Fountain Pen Velocity Dynamics',
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.5,
-                  ),
-                ),
-                const SizedBox(height: 6.0),
-                const Text(
-                  'Draw with natural stroke tapering, Catmull-Rom cubic Bézier curves, and instant vector SVG / PNG export.',
-                  style: TextStyle(fontSize: 14.0, color: Colors.grey),
-                ),
-                const SizedBox(height: 20.0),
-
-                // Signature Canvas Container
-                Container(
-                  height: 280,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF8FAFC),
-                    borderRadius: BorderRadius.circular(16.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.25),
-                        blurRadius: 18.0,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.15),
-                      width: 1.5,
-                    ),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: SmoothSignaturePad(
-                    controller: _controller,
-                    backgroundColor: Colors.white,
-                    showGuideline: true,
-                    guidelineColor: const Color(0x330F172A),
-                    guidelinePosition: 0.82,
-                    guidelineSignHereText: 'X  Sign Here',
-                  ),
-                ),
-                const SizedBox(height: 18.0),
-
-                // Palette & Action Bar
-                Row(
+      body: Stack(
+        children: [
+          Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 620),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text(
-                      'Ink: ',
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                      'Fountain Pen Velocity Dynamics',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.5,
+                      ),
                     ),
-                    const SizedBox(width: 6),
-                    ..._palette.map((color) {
-                      final isSelected = _selectedColor == color;
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _selectedColor = color;
-                            final currentStrokes = _controller.strokes;
-                            _controller.dispose();
-                            _controller = SignatureController(
-                              penColor: color,
-                              minStrokeWidth: 1.5,
-                              maxStrokeWidth: 4.8,
-                            );
-                            for (final s in currentStrokes) {
-                              _controller.startStroke(s.first.offset);
-                              for (int i = 1; i < s.length; i++) {
-                                _controller.addPoint(s[i].offset);
-                              }
-                              _controller.endStroke();
-                            }
-                          });
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                          width: 26,
-                          height: 26,
-                          decoration: BoxDecoration(
-                            color: color,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: isSelected
-                                  ? Colors.white
-                                  : Colors.transparent,
-                              width: 2.0,
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-                    const Spacer(),
-                    AnimatedBuilder(
-                      animation: _controller,
-                      builder: (context, _) {
-                        return Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.undo),
-                              tooltip: 'Undo',
-                              onPressed: _controller.canUndo
-                                  ? () => _controller.undo()
-                                  : null,
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.redo),
-                              tooltip: 'Redo',
-                              onPressed: _controller.canRedo
-                                  ? () => _controller.redo()
-                                  : null,
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete_outline),
-                              tooltip: 'Clear',
-                              onPressed: _controller.isNotEmpty
-                                  ? () => _controller.clear()
-                                  : null,
-                            ),
-                          ],
-                        );
-                      },
+                    const SizedBox(height: 6.0),
+                    const Text(
+                      'Draw with natural stroke tapering, Catmull-Rom cubic Bézier curves, and instant vector SVG / PNG export.',
+                      style: TextStyle(fontSize: 14.0, color: Colors.grey),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 24.0),
+                    const SizedBox(height: 20.0),
 
-                // Export Buttons
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: _showSvgDialog,
-                        icon: const Icon(Icons.code_rounded, size: 18),
-                        label: const Text('Export Vector SVG'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF0284C7),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 14.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                    // Signature Canvas Container
+                    Container(
+                      height: 280,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(16.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.25),
+                            blurRadius: 18.0,
+                            offset: const Offset(0, 6),
                           ),
+                        ],
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.15),
+                          width: 1.5,
                         ),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: SmoothSignaturePad(
+                        controller: _controller,
+                        backgroundColor: Colors.white,
+                        showGuideline: true,
+                        guidelineColor: const Color(0x330F172A),
+                        guidelinePosition: 0.82,
+                        guidelineSignHereText: 'X  Sign Here',
                       ),
                     ),
-                    const SizedBox(width: 12.0),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: _showPngDialog,
-                        icon: const Icon(Icons.image_outlined, size: 18),
-                        label: const Text('Export High-DPI PNG'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF10B981),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 14.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                    const SizedBox(height: 18.0),
+
+                    // Palette & Action Bar
+                    Row(
+                      children: [
+                        const Text(
+                          'Ink: ',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(width: 6),
+                        ..._palette.map((color) {
+                          final isSelected = _selectedColor == color;
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _selectedColor = color;
+                                final currentStrokes = _controller.strokes;
+                                _controller.dispose();
+                                _controller = SignatureController(
+                                  penColor: color,
+                                  minStrokeWidth: 1.5,
+                                  maxStrokeWidth: 4.8,
+                                );
+                                for (final s in currentStrokes) {
+                                  _controller.startStroke(s.first.offset);
+                                  for (int i = 1; i < s.length; i++) {
+                                    _controller.addPoint(s[i].offset);
+                                  }
+                                  _controller.endStroke();
+                                }
+                              });
+                            },
+                            child: Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 4.0),
+                              width: 26,
+                              height: 26,
+                              decoration: BoxDecoration(
+                                color: color,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.transparent,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                        const Spacer(),
+                        AnimatedBuilder(
+                          animation: _controller,
+                          builder: (context, _) {
+                            return Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.undo),
+                                  tooltip: 'Undo',
+                                  onPressed: _controller.canUndo
+                                      ? () => _controller.undo()
+                                      : null,
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.redo),
+                                  tooltip: 'Redo',
+                                  onPressed: _controller.canRedo
+                                      ? () => _controller.redo()
+                                      : null,
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete_outline),
+                                  tooltip: 'Clear',
+                                  onPressed: _controller.isNotEmpty
+                                      ? () => _controller.clear()
+                                      : null,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24.0),
+
+                    // Export Buttons
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: _showSvgDialog,
+                            icon: const Icon(Icons.code_rounded, size: 18),
+                            label: const Text('Export Vector SVG'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF0284C7),
+                              foregroundColor: Colors.white,
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 14.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        const SizedBox(width: 12.0),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: _showPngDialog,
+                            icon: const Icon(Icons.image_outlined, size: 18),
+                            label: const Text('Export High-DPI PNG'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF10B981),
+                              foregroundColor: Colors.white,
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 14.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+          const SonnerToaster(position: SonnerPosition.bottomRight),
+        ],
       ),
     );
   }

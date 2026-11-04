@@ -1,3 +1,8 @@
+## 1.2.1
+
+* **Discovery & Topics**: Refined search topics and description for signature pad, drawing, and vector canvas search queries.
+* **Example Application**: Integrated interactive feedback notifications for SVG and clipboard copy actions.
+
 ## 1.2.0
 
 - **Zero-Latency Real-Time Drawing**: Active strokes render immediately on pointer down and live pointer motion without buffering delays or waiting for finger lift.
