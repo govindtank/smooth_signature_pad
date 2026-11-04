@@ -1,3 +1,11 @@
+## 1.2.0
+
+- **Zero-Latency Real-Time Drawing**: Active strokes render immediately on pointer down and live pointer motion without buffering delays or waiting for finger lift.
+- **Immediate Contact Point (Taps & Dots)**: Touching the pad without dragging immediately draws a contact dot, allowing precise periods, i-dots, and accents.
+- **Stylus & Pressure Sensitivity**: Added stylus/Apple Pencil pressure tracking (`SignaturePoint.pressure`) for dynamic hardware pressure response.
+- **Exposed Active Stroke State**: Added `SignatureController.currentStroke` and `isDrawing` getters for real-time telemetry.
+- **Showcase Visuals**: Added crisp dark-mode vector SVG showcase banner in README documentation.
+
 ## 1.1.0
 
 - **Auto-Trim & Crop on Export**: Added `trim: true` to `toSvg()` and `toPngBytes()`, tightly cropping signature whitespace to its exact bounding box with configurable padding.

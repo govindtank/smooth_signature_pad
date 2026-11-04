@@ -32,14 +32,24 @@ class _SmoothSignaturePadState extends State<SmoothSignaturePad> {
   Widget build(BuildContext context) {
     return Container(
       color: widget.backgroundColor,
-      child: GestureDetector(
-        onPanStart: (details) {
-          widget.controller.startStroke(details.localPosition);
+      child: Listener(
+        behavior: HitTestBehavior.opaque,
+        onPointerDown: (event) {
+          widget.controller.startStroke(
+            event.localPosition,
+            pressure: event.pressure,
+          );
         },
-        onPanUpdate: (details) {
-          widget.controller.addPoint(details.localPosition);
+        onPointerMove: (event) {
+          widget.controller.addPoint(
+            event.localPosition,
+            pressure: event.pressure,
+          );
         },
-        onPanEnd: (_) {
+        onPointerUp: (event) {
+          widget.controller.endStroke();
+        },
+        onPointerCancel: (event) {
           widget.controller.endStroke();
         },
         child: AnimatedBuilder(
@@ -109,8 +119,13 @@ class _SignaturePainter extends CustomPainter {
       }
     }
 
-    // 2. Draw Signature Strokes
-    final allStrokes = [...controller.strokes];
+    // 2. Draw Signature Strokes (committed strokes + active real-time stroke)
+    final allStrokes = [
+      ...controller.strokes,
+      if (controller.currentStroke != null &&
+          controller.currentStroke!.isNotEmpty)
+        controller.currentStroke!,
+    ];
     final paint = Paint()
       ..color = controller.penColor
       ..strokeCap = StrokeCap.round

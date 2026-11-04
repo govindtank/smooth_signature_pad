@@ -9,7 +9,11 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square" alt="License"></a>
 </p>
 
-A smooth digital signature and drawing pad for Flutter. Features **fountain pen velocity-sensitive pressure simulation, Catmull-Rom cubic Bézier curve smoothing, and vector SVG & high-DPI raster PNG export**.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/govindtank/smooth_signature_pad/main/doc/assets/signature_showcase.svg" alt="smooth_signature_pad Showcase" width="100%">
+</p>
+
+A smooth digital signature and drawing pad for Flutter. Features **zero-latency real-time natural ink streaming, fountain pen velocity pressure simulation, Catmull-Rom cubic Bézier curve smoothing, and vector SVG & high-DPI raster PNG export**.
 
 ---
 
@@ -17,8 +21,9 @@ A smooth digital signature and drawing pad for Flutter. Features **fountain pen 
 
 Most Flutter signature packages suffer from noticeable limitations when used in commercial document-signing workflows:
 
+* 🚫 **Drawing Latency & Delayed Strokes**: Many packages buffer points and only render strokes after the user lifts their finger or moves past gesture slop thresholds. `smooth_signature_pad` uses low-level pointer event streaming for immediate, zero-latency feedback on finger contact and taps.
 * 🚫 **Jagged Straight Line Segments**: Connecting raw touch events with straight lines creates ugly, pixelated polygonal angles during rapid signatures.
-* 🚫 **No Pen Pressure Dynamics**: Real ink reacts to speed — rapid strokes taper to sharp, thin lines, while slow deliberate strokes form weighted ink lines. Standard packages produce uniform, artificial monoline widths.
+* 🚫 **No Pen Pressure Dynamics**: Real ink reacts to speed and pressure — rapid strokes taper to sharp, thin lines, while slow deliberate strokes form weighted ink lines. Standard packages produce uniform, artificial monoline widths.
 * 🚫 **No Lossless Vector SVG Export**: Stamping signatures onto legal PDF contracts or responsive web previews requires crisp, scale-independent vector SVG paths, not just compressed low-res bitmaps.
 
 `smooth_signature_pad` solves this with an ultra-lightweight, 120 FPS pure Canvas rendering engine.
@@ -29,10 +34,12 @@ Most Flutter signature packages suffer from noticeable limitations when used in 
 
 | Feature | Description |
 |---|---|
+| **⚡ Zero-Latency Real-Time Ink** | Instant point rendering on pointer down (tap dots, fine flourishes) with 0ms gesture lag. |
 | **✒️ Fountain Pen Velocity Pressure** | Dynamic stroke width calculation based on touch speed (thin on rapid flourishes, thick on slow curves). |
 | **➰ Catmull-Rom Bézier Splines** | Smooth cubic spline interpolation eliminating polygonal corner artifacts. |
 | **📐 Vector SVG Export** | Generates clean, resolution-independent XML `<svg>` markup with `<path d="...">` vectors. |
 | **🖼️ High-DPI PNG Export** | Generates transparent or background-filled raster PNG image bytes with customizable pixel ratio. |
+| **✂️ Auto-Trim & Bounding Box** | Automatically tight-crops signatures to exact stroke bounds (`trim: true`). |
 | **↩️ Full Undo / Redo History** | Intuitive stroke management with undo, redo, and clear methods. |
 | **📏 Legal Guideline Baseline** | Built-in customizable signing line and "X Sign Here" prompt indicator. |
 | **🌐 Multi-Platform** | 100% pure Dart & Flutter with zero native dependencies. Works on iOS, Android, Web, macOS, Windows, and Linux. |

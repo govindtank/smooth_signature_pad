@@ -28,6 +28,14 @@ class SignatureController extends ChangeNotifier {
   List<SignaturePoint>? _currentStroke;
 
   List<List<SignaturePoint>> get strokes => List.unmodifiable(_strokes);
+
+  /// Currently active in-progress stroke while finger/stylus is touching the pad.
+  List<SignaturePoint>? get currentStroke =>
+      _currentStroke != null ? List.unmodifiable(_currentStroke!) : null;
+
+  /// Whether the user is actively drawing a stroke on the pad.
+  bool get isDrawing => _currentStroke != null && _currentStroke!.isNotEmpty;
+
   bool get isEmpty => _strokes.isEmpty && (_currentStroke?.isEmpty ?? true);
   bool get isNotEmpty => !isEmpty;
   bool get canUndo => _strokes.isNotEmpty;
@@ -58,27 +66,29 @@ class SignatureController extends ChangeNotifier {
     return Rect.fromLTRB(minX, minY, maxX, maxY);
   }
 
-  void startStroke(Offset point) {
+  void startStroke(Offset point, {double pressure = 1.0}) {
     _undoHistory.clear();
 
     _currentStroke = [
       SignaturePoint(
         offset: point,
         time: DateTime.now().millisecondsSinceEpoch,
+        pressure: pressure > 0.0 ? pressure : 1.0,
       ),
     ];
     notifyListeners();
   }
 
-  void addPoint(Offset point) {
+  void addPoint(Offset point, {double pressure = 1.0}) {
     if (_currentStroke == null) {
-      startStroke(point);
+      startStroke(point, pressure: pressure);
       return;
     }
 
     final newPoint = SignaturePoint(
       offset: point,
       time: DateTime.now().millisecondsSinceEpoch,
+      pressure: pressure > 0.0 ? pressure : 1.0,
     );
 
     _currentStroke!.add(newPoint);

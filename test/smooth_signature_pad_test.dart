@@ -78,11 +78,50 @@ void main() {
       expect(padFinder, findsOneWidget);
 
       final gesture = await tester.startGesture(tester.getCenter(padFinder));
+      await tester.pump();
+      expect(controller.isDrawing, isTrue);
+      expect(controller.currentStroke, isNotNull);
+      expect(controller.currentStroke!.isNotEmpty, isTrue);
+
       await gesture.moveBy(const Offset(40, 20));
+      await tester.pump();
+      expect(controller.isDrawing, isTrue);
+      expect(controller.currentStroke!.length, greaterThanOrEqualTo(2));
+
       await gesture.moveBy(const Offset(40, -10));
+      await tester.pump();
       await gesture.up();
+      await tester.pump();
+
+      expect(controller.isDrawing, isFalse);
+      expect(controller.strokes.isNotEmpty, isTrue);
+    });
+
+    testWidgets('captures tap contact dot without requiring drag movement',
+        (tester) async {
+      final controller = SignatureController();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 300,
+              height: 200,
+              child: SmoothSignaturePad(
+                controller: controller,
+                backgroundColor: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final padFinder = find.byType(SmoothSignaturePad);
+      await tester.tap(padFinder);
+      await tester.pump();
 
       expect(controller.strokes.isNotEmpty, isTrue);
+      expect(controller.strokes.first.length, equals(1));
     });
   });
 }
