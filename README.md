@@ -13,133 +13,66 @@
   <img src="https://raw.githubusercontent.com/govindtank/smooth_signature_pad/main/doc/assets/signature_showcase.svg" alt="smooth_signature_pad Showcase" width="100%">
 </p>
 
-A smooth digital signature and drawing pad for Flutter. Features **zero-latency real-time natural ink streaming, fountain pen velocity pressure simulation, Catmull-Rom cubic Bézier curve smoothing, and vector SVG & high-DPI raster PNG export**.
+A smooth digital signature pad and turnkey `SignatureCaptureCard` for Flutter applications. Features **fountain pen velocity pressure simulation, Catmull-Rom cubic Bézier smoothing, cryptographic audit trail hashing, and auto-trimmed vector SVG & PNG export**.
 
 ---
 
-## ⚡ Why `smooth_signature_pad`?
+## ⚡ Key Features
 
-Most Flutter signature packages suffer from noticeable limitations when used in commercial document-signing workflows:
-
-* 🚫 **Drawing Latency & Delayed Strokes**: Many packages buffer points and only render strokes after the user lifts their finger or moves past gesture slop thresholds. `smooth_signature_pad` uses low-level pointer event streaming for immediate, zero-latency feedback on finger contact and taps.
-* 🚫 **Jagged Straight Line Segments**: Connecting raw touch events with straight lines creates ugly, pixelated polygonal angles during rapid signatures.
-* 🚫 **No Pen Pressure Dynamics**: Real ink reacts to speed and pressure — rapid strokes taper to sharp, thin lines, while slow deliberate strokes form weighted ink lines. Standard packages produce uniform, artificial monoline widths.
-* 🚫 **No Lossless Vector SVG Export**: Stamping signatures onto legal PDF contracts or responsive web previews requires crisp, scale-independent vector SVG paths, not just compressed low-res bitmaps.
-
-`smooth_signature_pad` solves this with an ultra-lightweight, 120 FPS pure Canvas rendering engine.
-
----
-
-## 🚀 Features
-
-| Feature | Description |
-|---|---|
-| **⚡ Zero-Latency Real-Time Ink** | Instant point rendering on pointer down (tap dots, fine flourishes) with 0ms gesture lag. |
-| **✒️ Fountain Pen Velocity Pressure** | Dynamic stroke width calculation based on touch speed (thin on rapid flourishes, thick on slow curves). |
-| **➰ Catmull-Rom Bézier Splines** | Smooth cubic spline interpolation eliminating polygonal corner artifacts. |
-| **📐 Vector SVG Export** | Generates clean, resolution-independent XML `<svg>` markup with `<path d="...">` vectors. |
-| **🖼️ High-DPI PNG Export** | Generates transparent or background-filled raster PNG image bytes with customizable pixel ratio. |
-| **✂️ Auto-Trim & Bounding Box** | Automatically tight-crops signatures to exact stroke bounds (`trim: true`). |
-| **↩️ Full Undo / Redo History** | Intuitive stroke management with undo, redo, and clear methods. |
-| **📏 Legal Guideline Baseline** | Built-in customizable signing line and "X Sign Here" prompt indicator. |
-| **🌐 Multi-Platform** | 100% pure Dart & Flutter with zero native dependencies. Works on iOS, Android, Web, macOS, Windows, and Linux. |
+| Feature | Description | Real-World Benefit |
+|---|---|---|
+| **Turnkey `SignatureCaptureCard`** | Complete legal signature capture block with baseline guide and action toolbar | Ready in 3 lines of code |
+| **Legal Audit Metadata** | Cryptographic 64-bit FNV-1a hash over stroke coordinates, signer ID, and UTC timestamp | IT Act / ESIGN legal compliance |
+| **Ink Color Presets** | One-tap toggle for Legal Blue (`#1E40AF` preferred by banks) and Deep Black | Prevents photocopy confusion |
+| **Velocity-Sensitive Fountain Pen** | Dynamic stroke tapering based on gesture velocity (natural thick-thin ink) | Looks like real fountain ink |
+| **Auto-Trim Export** | `toSvg(trim: true)` and `toPngBytes(trim: true)` tightly crop whitespace margins | Zero wasted margin in documents |
+| **Immediate Contact Points** | Single taps draw crisp periods and accents without requiring drag movement | Enables precise "i" dots and periods |
 
 ---
 
-## 📦 Installation
+## 🚀 Quick Usage
 
-Add `smooth_signature_pad` to your `pubspec.yaml`:
+### 1. Turnkey Legal E-Signing (`SignatureCaptureCard`)
 
-```bash
-flutter pub add smooth_signature_pad
+```dart
+SignatureCaptureCard(
+  title: 'Authorized Signatory',
+  subtitle: 'Please sign above the baseline',
+  signerName: 'Govind Tank',
+  signerId: 'USER-9921',
+  documentId: 'DOC-AGREEMENT-2026',
+  requireLegalConsent: true,
+  onSignatureSaved: (Uint8List pngBytes, String svg, SignatureAuditMetadata audit) {
+    print('Signature Hash: ${audit.integrityHash}');
+    print('Timestamp: ${audit.timestamp}');
+    print('Audit Line: ${audit.auditLine}');
+    // Attach pngBytes or svg to your contract / backend
+  },
+)
 ```
 
 ---
 
-## 💡 Quick Start
+### 2. Lower-Level Custom Signature Pad
 
 ```dart
-import 'package:flutter/material.dart';
-import 'package:smooth_signature_pad/smooth_signature_pad.dart';
-
-class SignatureScreen extends StatefulWidget {
-  const SignatureScreen({super.key});
-
-  @override
-  State<SignatureScreen> createState() => _SignatureScreenState();
-}
-
-class _SignatureScreenState extends State<SignatureScreen> {
-  final SignatureController _controller = SignatureController(
-    penColor: const Color(0xFF0F172A),
-    minStrokeWidth: 1.5,
-    maxStrokeWidth: 4.5,
-  );
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          width: 420,
-          height: 240,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: SmoothSignaturePad(
-            controller: _controller,
-            showGuideline: true,
-            guidelineSignHereText: 'X Sign Here',
-          ),
-        ),
-      ),
-    );
-  }
-}
-```
-
----
-
-## 📐 Exporting Signatures
-
-### Vector SVG
-```dart
-// Export vector SVG string
-final String svgString = _controller.toSvg(
-  width: 500,
-  height: 260,
-  strokeColor: Colors.black,
+final controller = SignatureController(
+  penColor: const Color(0xFF1E40AF), // Legal Blue
+  penStyle: PenStyle.fountain,        // or ballpoint, calligraphy
+  minStrokeWidth: 1.5,
+  maxStrokeWidth: 4.5,
 );
+
+SmoothSignaturePad(
+  controller: controller,
+  showGuideline: true,
+  guidelineSignHereText: '✕ Sign Here',
+)
+
+// Auto-trimmed Vector SVG & PNG Export
+final String svgString = controller.toSvg(trim: true);
+final Uint8List? pngBytes = await controller.toPngBytes(trim: true, pixelRatio: 3.0);
 ```
-
-### High-DPI PNG
-```dart
-// Export 3x retina PNG bytes
-final Uint8List? pngBytes = await _controller.toPngBytes(
-  width: 500,
-  height: 260,
-  pixelRatio: 3.0,
-  backgroundColor: Colors.transparent,
-);
-```
-
----
-
-## 🔗 Related Packages by Author
-
-* **[flutter_privacy_vault](https://pub.dev/packages/flutter_privacy_vault)** — App-switcher privacy shield, inactivity auto-lock with biometrics, and balance masking.
-* **[ai_stream_bubble](https://pub.dev/packages/ai_stream_bubble)** — High-performance streaming AI message bubble with DeepSeek/Claude reasoning accordions.
-* **[flutter_sonner](https://pub.dev/packages/flutter_sonner)** — Opinionated stacked action toast & notification HUD with spring physics.
-* **[spatial_card](https://pub.dev/packages/spatial_card)** — 3D tactile interactive cards & multi-plane parallax surfaces.
 
 ---
 

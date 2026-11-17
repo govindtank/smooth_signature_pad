@@ -1,3 +1,16 @@
+## 1.3.0
+
+* **Turnkey `SignatureCaptureCard` Widget**: Production-ready legal e-signing block bundling:
+  * Baseline guide with "✕ Sign Here" mark.
+  * Ink color selector (Legal Blue `#1E40AF` preferred by banks/notaries vs Deep Black).
+  * Mandatory legal consent declaration checkbox.
+  * Undo, redo, clear action toolbar with stroke count telemetry.
+  * Direct export callback: `onSignatureSaved(pngBytes, svgString, audit)`.
+* **Cryptographic Audit Trail (`SignatureAuditMetadata`)**:
+  * Captures signer name, external signer ID, contract document ID, and exact UTC timestamp.
+  * Calculates deterministic 64-bit FNV-1a integrity hash over all stroke coordinates and timestamps with 0 external dependencies.
+* **Upgraded Vector Visual Showcase**: High-resolution 1200x680 demonstration diagram showcasing real-world e-signing workflows and audit metadata.
+
 ## 1.2.1
 
 * **Discovery & Topics**: Refined search topics and description for signature pad, drawing, and vector canvas search queries.

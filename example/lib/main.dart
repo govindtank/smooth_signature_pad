@@ -72,6 +72,10 @@ class _SignatureDemoScreenState extends State<SignatureDemoScreen> {
       const ClipboardData(text: 'flutter pub add smooth_signature_pad'),
     );
     HapticFeedback.lightImpact();
+    setState(() => _copiedCommand = true);
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) setState(() => _copiedCommand = false);
+    });
     Sonner.success('Copied flutter pub add smooth_signature_pad');
   }
 

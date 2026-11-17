@@ -1,6 +1,6 @@
 name: smooth_signature_pad
-description: Smooth digital signature and drawing pad for Flutter with zero-latency ink, fountain pen velocity pressure, Catmull-Rom curves, and vector SVG export.
-version: 1.2.1
+description: Smooth digital signature pad for Flutter with fountain pen velocity pressure, turnkey SignatureCaptureCard, cryptographic audit trail hashing, and vector SVG export.
+version: 1.3.0
 homepage: https://github.com/govindtank/smooth_signature_pad
 repository: https://github.com/govindtank/smooth_signature_pad
 issue_tracker: https://github.com/govindtank/smooth_signature_pad/issues
@@ -11,10 +11,10 @@ funding:
 
 topics:
   - signature
-  - drawing
   - signature-pad
-  - canvas
-  - svg
+  - digital-signature
+  - drawing
+  - esign
 
 environment:
   sdk: ">=3.2.0 <4.0.0"
