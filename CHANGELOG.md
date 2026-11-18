@@ -1,3 +1,9 @@
+## 1.3.1
+
+* **Interactive Document Stamping Studio**: Upgraded web demo with full legal contract preview, dynamic signature stamping, pen stroke width sliders, paper textures (Parchment, White, Dark), and JSON/Base64 export.
+* **Vector Stroke Serialization**: Added `toJson()`, `loadFromJson()`, and `toBase64()` to `SignatureController` for database storage and REST API transmission.
+* **Stroke Complexity Score**: Added `totalLength` heuristic on `SignatureController` to prevent single-dot clicks from counting as valid signatures.
+
 ## 1.3.0
 
 * **Turnkey `SignatureCaptureCard` Widget**: Production-ready legal e-signing block bundling:

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -341,5 +342,85 @@ class SignatureController extends ChangeNotifier {
     );
     final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     return byteData?.buffer.asUint8List();
+  }
+
+  /// Serializes all recorded signature strokes to a JSON string.
+  /// Ideal for storing vector signatures in databases or transmitting via REST API.
+  String toJson() {
+    final list = _strokes.map((stroke) {
+      return stroke
+          .map((pt) => {
+                'x': pt.offset.dx,
+                'y': pt.offset.dy,
+                't': pt.time,
+                'p': pt.pressure,
+              })
+          .toList();
+    }).toList();
+    return jsonEncode(list);
+  }
+
+  /// Restores signature strokes from a serialized JSON string.
+  void loadFromJson(String jsonString) {
+    try {
+      final decoded = jsonDecode(jsonString) as List<dynamic>;
+      _strokes.clear();
+      _undoHistory.clear();
+      _currentStroke = null;
+
+      for (final rawStroke in decoded) {
+        final strokeList = <SignaturePoint>[];
+        for (final rawPt in rawStroke as List<dynamic>) {
+          final map = rawPt as Map<String, dynamic>;
+          strokeList.add(
+            SignaturePoint(
+              offset: Offset(
+                (map['x'] as num).toDouble(),
+                (map['y'] as num).toDouble(),
+              ),
+              time: (map['t'] as num).toInt(),
+              pressure: (map['p'] as num?)?.toDouble() ?? 1.0,
+            ),
+          );
+        }
+        if (strokeList.isNotEmpty) {
+          _strokes.add(strokeList);
+        }
+      }
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading signature from JSON: $e');
+    }
+  }
+
+  /// Exports signature as a Base64-encoded PNG data URI string (e.g. `data:image/png;base64,...`).
+  Future<String?> toBase64({
+    double width = 400.0,
+    double height = 200.0,
+    double pixelRatio = 3.0,
+    Color? backgroundColor,
+    bool trim = true,
+  }) async {
+    final bytes = await toPngBytes(
+      width: width,
+      height: height,
+      pixelRatio: pixelRatio,
+      backgroundColor: backgroundColor,
+      trim: trim,
+    );
+    if (bytes == null) return null;
+    return 'data:image/png;base64,${base64Encode(bytes)}';
+  }
+
+  /// Calculates a heuristic complexity score (cumulative stroke length in pixels).
+  /// Useful to verify that a signature is a genuine gesture and not just an accidental dot.
+  double get totalLength {
+    double total = 0.0;
+    for (final stroke in _strokes) {
+      for (int i = 0; i < stroke.length - 1; i++) {
+        total += stroke[i].distanceTo(stroke[i + 1]);
+      }
+    }
+    return total;
   }
 }

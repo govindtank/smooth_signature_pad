@@ -1,6 +1,6 @@
 name: smooth_signature_pad
 description: Smooth digital signature pad for Flutter with fountain pen velocity pressure, turnkey SignatureCaptureCard, cryptographic audit trail hashing, and vector SVG export.
-version: 1.3.0
+version: 1.3.1
 homepage: https://github.com/govindtank/smooth_signature_pad
 repository: https://github.com/govindtank/smooth_signature_pad
 issue_tracker: https://github.com/govindtank/smooth_signature_pad/issues
