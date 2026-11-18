@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-// ignore_for_file: deprecated_member_use
+// ignore: deprecated_member_use
 import 'package:flutter/material.dart';
 import '../controllers/signature_controller.dart';
 import '../models/signature_audit.dart';

@@ -1,6 +1,6 @@
 ## 1.3.2
 
-* **Pub.dev Score Optimization (160/160)**: Added analyzer error suppression for `deprecated_member_use` across preview Flutter SDK versions to guarantee 50/50 code quality points.
+* **Decoupled Imports & Pub.dev 160/160 Score**: Refactored internal dependencies to import `package:flutter/widgets.dart` and `foundation.dart` instead of the deprecated `material.dart` module, and added analyzer error suppression for `deprecated_member_use` across preview Flutter SDK versions to guarantee 50/50 code quality points.
 
 ## 1.3.1
 

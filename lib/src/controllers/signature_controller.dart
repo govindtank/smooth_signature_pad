@@ -1,16 +1,15 @@
-// ignore_for_file: deprecated_member_use
 import 'dart:convert';
 import 'dart:math';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart';
 import '../models/signature_point.dart';
 
 /// Controller managing signature strokes, velocity-sensitive pressure calculations,
 /// multi-pen styles, undo/redo history, and auto-trimmed vector SVG & PNG exports.
 class SignatureController extends ChangeNotifier {
   SignatureController({
-    this.penColor = Colors.black,
+    this.penColor = const Color(0xFF000000),
     this.penStyle = PenStyle.fountain,
     this.minStrokeWidth = 1.5,
     this.maxStrokeWidth = 4.5,

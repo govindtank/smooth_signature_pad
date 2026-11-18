@@ -1,6 +1,5 @@
-// ignore_for_file: deprecated_member_use
 import 'dart:math';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import '../controllers/signature_controller.dart';
 import '../models/signature_point.dart';
 
@@ -10,7 +9,7 @@ class SmoothSignaturePad extends StatefulWidget {
   const SmoothSignaturePad({
     super.key,
     required this.controller,
-    this.backgroundColor = Colors.transparent,
+    this.backgroundColor = const Color(0x00000000),
     this.showGuideline = true,
     this.guidelineColor = const Color(0x33000000),
     this.guidelinePosition = 0.8,
