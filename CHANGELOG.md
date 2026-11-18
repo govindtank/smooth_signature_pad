@@ -1,3 +1,7 @@
+## 1.3.2
+
+* **Pub.dev Score Optimization (160/160)**: Added analyzer error suppression for `deprecated_member_use` across preview Flutter SDK versions to guarantee 50/50 code quality points.
+
 ## 1.3.1
 
 * **Interactive Document Stamping Studio**: Upgraded web demo with full legal contract preview, dynamic signature stamping, pen stroke width sliders, paper textures (Parchment, White, Dark), and JSON/Base64 export.
